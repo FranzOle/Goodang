@@ -1,0 +1,11 @@
+Fitur-Fitur Goodang.
+
+1. CRUD Data-data penting untuk pergudangan seperti kategori gudang supplier dan barang
+2. Admin manajemen data user (CRUD)
+3. Fitur Transaksi import export dan transfer data antar gudang
+4. Fitur export pdf
+5. Dashboard Intuitif dan informatif berisi rangkuman data user
+6. Pengelolaan stok barang disetiap gudang
+7. Roles-roles user berisi admin,staff, dan user -> dimana saat signup akan otomatis diberi role user
+8. Role user hanya bisa read/view data saja
+9. Staff gudang dapat diberi role ditugaskan digudang mana
