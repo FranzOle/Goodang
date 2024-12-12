@@ -20,4 +20,9 @@ class Gudang extends Model
         return $this->hasMany(Transaksi::class, 'id_gudang');
     }
 
+    public function user()
+    {
+        return $this->hasMany(User::class, 'id_gudang');
+    }
+
 }

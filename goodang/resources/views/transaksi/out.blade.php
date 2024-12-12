@@ -29,7 +29,7 @@
                             <div class="card-body">
                                 <div class="form-group">
                                     <label>Gudang</label>
-                                    <select name="id_gudang" class="form-control">
+                                    <select id="gudang" name="id_gudang" class="form-control" required>
                                         <option value="">Pilih Gudang</option>
                                         @foreach($gudangs as $gudang)
                                             <option value="{{ $gudang->id }}">{{ $gudang->nama }}</option>
@@ -53,16 +53,16 @@
                                     <div class="row mb-2 stok-row">
                                         <div class="col-md-6">
                                             <label>Barang</label>
-                                            <select name="stok[0][id_barang]" class="form-control">
+                                            <select name="stok[0][id_barang]" class="form-control barang-dropdown" required>
                                                 <option value="">Pilih Barang</option>
-                                                @foreach($barangs as $barang)
-                                                    <option value="{{ $barang->id }}">{{ $barang->nama }}</option>
-                                                @endforeach
                                             </select>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <label>Kuantitas</label>
                                             <input name="stok[0][kuantitas]" type="number" class="form-control" min="1" placeholder="Masukkan Kuantitas">
+                                        </div>
+                                        <div class="col-md-2 d-flex align-items-end">
+                                            <button type="button" class="btn btn-danger btn-sm remove-stok">Hapus</button>
                                         </div>
                                     </div>
                                 </div>
@@ -84,19 +84,40 @@
 <script>
     let stokIndex = 1;
 
+    // Barang per gudang
+    const barangPerGudang = @json($gudangs->mapWithKeys(function($gudang) {
+        return [$gudang->id => $gudang->jumlahstok->map(function($stok) {
+            return ['id' => $stok->barang->id, 'nama' => $stok->barang->nama];
+        })];
+    }));
+
+    // Fungsi untuk memuat barang dari gudang
+    function loadBarang(gudangId, dropdown) {
+        dropdown.innerHTML = '<option value="">Pilih Barang</option>';
+        if (barangPerGudang[gudangId]) {
+            barangPerGudang[gudangId].forEach(barang => {
+                dropdown.innerHTML += `<option value="${barang.id}">${barang.nama}</option>`;
+            });
+        }
+    }
+
+    // Event Listener untuk Gudang
+    document.getElementById('gudang').addEventListener('change', function () {
+        const gudangId = this.value;
+        const firstDropdown = document.querySelector('.barang-dropdown');
+        loadBarang(gudangId, firstDropdown);
+    });
+
     // Menambahkan baris barang baru
-    document.getElementById('add-stok').addEventListener('click', function() {
+    document.getElementById('add-stok').addEventListener('click', function () {
         const container = document.getElementById('stok-container');
         const newRow = document.createElement('div');
         newRow.classList.add('row', 'mb-2', 'stok-row');
         newRow.innerHTML = `
             <div class="col-md-6">
                 <label>Barang</label>
-                <select name="stok[${stokIndex}][id_barang]" class="form-control">
+                <select name="stok[${stokIndex}][id_barang]" class="form-control barang-dropdown" required>
                     <option value="">Pilih Barang</option>
-                    @foreach($barangs as $barang)
-                        <option value="{{ $barang->id }}">{{ $barang->nama }}</option>
-                    @endforeach
                 </select>
             </div>
             <div class="col-md-4">
@@ -104,19 +125,22 @@
                 <input name="stok[${stokIndex}][kuantitas]" type="number" class="form-control" min="1" placeholder="Masukkan Kuantitas">
             </div>
             <div class="col-md-2 d-flex align-items-end">
-                <button type="button" class="btn btn-danger btn-sm remove-stok">
-                    Hapus
-                </button>
+                <button type="button" class="btn btn-danger btn-sm remove-stok">Hapus</button>
             </div>
         `;
         container.appendChild(newRow);
 
-        // Tambahkan event listener untuk tombol hapus
-        newRow.querySelector('.remove-stok').addEventListener('click', function() {
-            newRow.remove();
-        });
+        const gudangId = document.getElementById('gudang').value;
+        const dropdown = newRow.querySelector('.barang-dropdown');
+        loadBarang(gudangId, dropdown);
 
         stokIndex++;
+    });
+
+    document.addEventListener('click', function (e) {
+        if (e.target && e.target.classList.contains('remove-stok')) {
+            e.target.closest('.stok-row').remove();
+        }
     });
 </script>
 

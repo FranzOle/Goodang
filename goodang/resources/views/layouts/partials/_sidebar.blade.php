@@ -98,12 +98,14 @@
                         <p>Transaksi Keluar</p>
                     </a>
                 </li>
-              <li class="nav-item">
-                <a href="{{ route('transaksi.transfer.create') }}" class="nav-link">
-                  <i class="fa fas fa-exchange-alt"></i>
-                    <p>Transaksi Gudang</p>
-                </a>
-            </li>
+                @if(Auth::user()->role === 'admin')
+                <li class="nav-item">
+                  <a href="{{ route('transaksi.transfer.create') }}" class="nav-link">
+                    <i class="fa fas fa-exchange-alt"></i>
+                      <p>Transaksi Gudang</p>
+                  </a>
+                </li>
+                @endif
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="fa fas fa-history"></i>
