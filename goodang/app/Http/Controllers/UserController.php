@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Gudang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -23,7 +24,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('users.create');
+        $gudang = Gudang::all();
+        return view('users.create', compact('gudang'));
     }
 
     /**
@@ -35,7 +37,8 @@ class UserController extends Controller
             'name' => 'required|min:2|max:50',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',
-            'role' => 'required'
+            'role' => 'required',
+            'id_gudang' => $request->role == 'staff' ? 'required' : 'nullable',
         ]);
 
         $user = new User();
@@ -43,9 +46,10 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
         $user->role = $request->role;
+        $user->id_gudang = $request->role == 'staff' ? $request->id_gudang : null;
         $user->save();
 
-        flash('User baru telah ditambahkan')->success();
+        flash('User  baru telah ditambahkan')->success();
         return redirect()->route('users.index');
     }
 
@@ -63,7 +67,8 @@ class UserController extends Controller
     public function edit(string $id)
     {
         $user = User::findOrFail($id);
-        return view('users.edit', compact('user'));
+        $gudang = Gudang::all();
+        return view('users.edit', compact('user', 'gudang'));
     }
 
     /**
@@ -75,9 +80,10 @@ class UserController extends Controller
             'name' => 'required|min:2|max:50',
             'email' => 'required|email|unique:users,email,' . $id,
             'password' => 'nullable|min:6|confirmed',
-            'role' => 'required'
+            'role' => 'required',
+            'id_gudang' => $request->role == 'staff' ? 'required' : 'nullable',
         ]);
-
+    
         $user = User::findOrFail($id);
         $user->name = $request->name;
         $user->email = $request->email;
@@ -86,8 +92,9 @@ class UserController extends Controller
             $user->password = Hash::make($request->password);
         }
         $user->role = $request->role;
+        $user->id_gudang = $request->role == 'staff' ? $request->id_gudang : null;
         $user->save();
-
+    
         flash('Data user telah diperbarui')->success();
         return redirect()->route('users.index');
     }

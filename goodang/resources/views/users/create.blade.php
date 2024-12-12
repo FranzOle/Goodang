@@ -6,20 +6,18 @@
         <div class="row mb-2">
             <div class="col-sm-6">
                 <h1 class="m-0 text-dark">User Management</h1>
-            </div><!-- /.col -->
+            </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
                     <li class="breadcrumb-item"><a href="{{ route('users.index') }}">Users</a></li>
                     <li class="breadcrumb-item active">Tambah User</li>
                 </ol>
-            </div><!-- /.col -->
-        </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
+            </div>
+        </div>
+    </div>
 </div>
-<!-- /.content-header -->
 
-<!-- Main content -->
 <div class="content">
     <div class="container-fluid">
         <div class="row">
@@ -32,7 +30,7 @@
                             @csrf
                             <div class="card-body">
                                 <div class="form-group">
-                                    <label for="name">Userame</label>
+                                    <label for="name">Username</label>
                                     <input name="name" type="text" class="form-control" placeholder="Entry Username" value="{{ old('name') }}">
                                     @if($errors->has('name'))
                                         <span class="required text-danger">{{ $errors->first('name') }}</span>
@@ -65,7 +63,7 @@
 
                                 <div class="form-group">
                                     <label for="role">Role</label>
-                                    <select name="role" class="form-control">
+                                    <select id="role" name="role" class="form-control">
                                         <option value="">Pilih Role</option>
                                         <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                                         <option value="staff" {{ old('role') == 'staff' ? 'selected' : '' }}>Staff</option>
@@ -76,19 +74,45 @@
                                     @endif
                                 </div>
 
+                                <!-- Kolom Gudang -->
+                                <div class="form-group d-none" id="gudang-container">
+                                    <label for="id_gudang">Tugaskan ke Gudang</label>
+                                    <select name="id_gudang" class="form-control">
+                                        <option value="">Pilih Gudang</option>
+                                        @foreach($gudang as $item)
+                                            <option value="{{ $item->id }}" {{ old('id_gudang') == $item->id ? 'selected' : '' }}>
+                                                {{ $item->nama }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @if($errors->has('id_gudang'))
+                                        <span class="required text-danger">{{ $errors->first('id_gudang') }}</span>
+                                    @endif
+                                </div>
+
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fa fa-save"></i> Submit
                                 </button>
                             </div>
-                            <!-- /.card-body -->
                         </form>
                     </div>
-                </div><!-- /.card -->
+                </div>
             </div>
-            <!-- /.col-md-6 -->
         </div>
-        <!-- /.row -->
-    </div><!-- /.container-fluid -->
+    </div>
 </div>
-<!-- /.content -->
+
+<script>
+    // Mengatur visibilitas dropdown gudang
+    document.getElementById('role').addEventListener('change', function () {
+        const role = this.value;
+        const gudangContainer = document.getElementById('gudang-container');
+        
+        if (role === 'staff') {
+            gudangContainer.classList.remove('d-none');
+        } else {
+            gudangContainer.classList.add('d-none');
+        }
+    });
+</script>
 @endsection
