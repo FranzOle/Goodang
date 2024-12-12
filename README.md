@@ -10,18 +10,19 @@ Goodang adalah aplikasi berbasis web untuk mempermudah pengelolaan aktivitas gud
 - **Pengelolaan Pengguna:** Registrasi & manajemen akses pengguna. 👥  
 - **Multi-Gudang:** Kelola lebih dari satu gudang. 🌐  
 
+---
+
+
 ## 🎯 Target Pengguna  
 1. **Admin Gudang:** Mengelola seluruh data dan aktivitas gudang. 🛠️  
 2. **Petugas Gudang:** Mencatat barang masuk, keluar, dan stok opname. 📋  
 
-## 🛠️ Teknologi  
-- **Framework:** Laravel  
-- **Database:** PostgreSQL  
-- **Bahasa Pemrograman:** PHP  
-- **Frontend:** HTML, CSS, JavaScript  
+---
 
 ## 🚀 Mulailah Menggunakan Goodang  
 Goodang membantu Anda mengelola gudang dengan lebih efisien dan modern. Jangan ragu untuk mencoba aplikasi ini! 😊  
+
+---
 
 # 📦 Panduan Lengkap Setup Aplikasi Goodang
 Panduan ini akan membantu Anda melakukan setup aplikasi dengan langkah-langkah berikut. Pastikan Anda mengikuti setiap langkah dengan saksama. 🚀
@@ -42,7 +43,7 @@ Panduan ini akan membantu Anda melakukan setup aplikasi dengan langkah-langkah b
 
 1. **Clone Repository**  
    Clone repository ini ke dalam direktori lokal Anda:  
-   **`git clone <url-repository>`**
+   **`git clone https://github.com/FranzOle/Goodang.git`**
 
 2. **Install Dependencies**  
    Masuk ke direktori project, lalu install dependensi:  
