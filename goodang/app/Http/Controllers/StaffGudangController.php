@@ -37,7 +37,8 @@ class StaffGudangController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $gudang = Gudang::with(['jumlahstok.barang'])->findOrFail($id);
+        return view('nonadmin.gudang.show', compact('gudang'));
     }
 
     /**
