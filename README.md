@@ -31,7 +31,8 @@ Panduan ini akan membantu Anda melakukan setup aplikasi dengan langkah-langkah b
 
 ## 📋 Persyaratan Minimum dan Opsional
 
-- **PHP:** Versi 8.1 atau lebih baru  
+- **PHP:** Versi 8.1 atau lebih baru
+- **Python:** Versi 3 atau lebih baru (opsional)  
 - **Composer:** Versi terbaru  
 - **Node.js & npm:** Node.js versi 16 ke atas dan npm versi 8 ke atas  
 - **Database:** PostgreSQL, MySQL, atau lainnya sesuai preferensi Anda  
@@ -42,7 +43,7 @@ Panduan ini akan membantu Anda melakukan setup aplikasi dengan langkah-langkah b
 ## 🛠️ Langkah-Langkah Setup
 
 1. **Clone Repository**  
-   Clone repository ini ke dalam direktori lokal Anda:  
+   Clone repository ini ke dalam direktori lokal Anda (jika pakai Git):  
    **`git clone https://github.com/FranzOle/Goodang.git`**
 
 2. **Install Dependencies**  
@@ -122,14 +123,19 @@ Panduan ini akan membantu Anda melakukan setup aplikasi dengan langkah-langkah b
    Di terminal lain, jalankan:  
    **`npm run dev`**  
 
+8. **Jalankan Generator KODE SKU (Jika perlu)**  
+   Jalankan di cmd atau powershell kode ini  
+   **`python "referensi_kode_referensi.py"`**
+   
 ---
 
 ## 🛠️ Teknologi yang Digunakan  
 
 - **Framework:** Laravel 10  
 - **Frontend:** Bootstrap 5, AdminLTE3, JQuery  
-- **Fitur Tambahan:** Jetstream 4, Flash, MPdf, Spatie  
-- **Database:** PostgreSQL 15, MySQL  
+- **Fitur Tambahan:** Jetstream 4, Flash, MPdf, Spatie, TKinter  
+- **Database:** PostgreSQL 15, MySQL
+- **Bahasa Pemrograman:** PHP, Javascript, Python
 - **Lokasi:** Nominatim dan Leaflet  
 
 ---
@@ -138,4 +144,5 @@ Panduan ini akan membantu Anda melakukan setup aplikasi dengan langkah-langkah b
 
 Aplikasi ini dikembangkan oleh:  
 **Lionel Jevon Chrismana Putra**  
-Siswa Kelas XII, SMKN 2 Buduran  
+Siswa Kelas XII, SMKN 2 Buduran
+  
