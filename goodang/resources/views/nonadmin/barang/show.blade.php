@@ -48,6 +48,10 @@
                                 <td>{{ $barang->supplier->nama ?? 'Tidak ada supplier' }}</td>
                             </tr>
                             <tr>
+                                <th>Harga</th>
+                                <td class="harga-barang format-harga" data-harga="{{ $barang->harga }}"></td>
+                            </tr>
+                            <tr>
                                 <th>Gambar</th>
                                 <td>
                                     @if($barang->gambar)

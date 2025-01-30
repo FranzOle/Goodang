@@ -9,8 +9,9 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable //implements MustVerifyEmail
+class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens;
     use HasFactory;
@@ -28,6 +29,10 @@ class User extends Authenticatable //implements MustVerifyEmail
         'email',
         'password',
         'role',
+        'nomor_telepon',
+        'id_gudang',
+        'no_goodang',
+        'alamat',
     ];
 
     /**
@@ -64,4 +69,38 @@ class User extends Authenticatable //implements MustVerifyEmail
     {
         return $this->belongsTo(Gudang::class, 'id_gudang');
     }
+
+    public function transaksi()
+    {
+        return $this->hasMany(Transaksi::class, 'id_user');
+    }
+
+    public function sales()
+    {
+        return $this->hasMany(Sale::class, 'user_id');
+    }
+
+    /**
+    * Get the identifier that will be stored in the subject claim of the JWT.
+    *
+    * @return mixed
+    */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+    * Return a key value array, containing any custom claims to be added to the JWT.
+    *
+    * @return array
+    */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
+
+
+
 }

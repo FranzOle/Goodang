@@ -18,8 +18,10 @@ return new class extends Migration
             $table->string('kode_sku', 255);
             $table->string('nama', 255);
             $table->string('deskripsi', 1004);
+            $table->decimal('harga', 15, 2)->default(0);
             $table->string('gambar');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -21,7 +21,7 @@
 <div class="content">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-6">
+            <div class="col-6">
                 <div class="card card-primary card-outline">
                     <div class="card-body">
                         <h5 class="card-title">Perbarui Data User</h5><br>
@@ -29,67 +29,102 @@
                             @csrf
                             @method('PUT')
                             <div class="card-body">
+                                <!-- Username -->
                                 <div class="form-group">
                                     <label for="name">Username</label>
-                                    <input name="name" type="text" class="form-control" value="{{ $user->name }}" placeholder="Entry Username">
-                                    @if($errors->has('name'))
-                                        <span class="required text-danger">{{ $errors->first('name') }}</span>
-                                    @endif
+                                    <input name="name" type="text" class="form-control" value="{{ old('name', $user->name) }}" placeholder="Entry Username">
+                                    @error('name')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
 
+                                <!-- Email -->
                                 <div class="form-group">
                                     <label for="email">Email</label>
-                                    <input name="email" type="email" class="form-control" value="{{ $user->email }}" placeholder="Entry Email">
-                                    @if($errors->has('email'))
-                                        <span class="required text-danger">{{ $errors->first('email') }}</span>
-                                    @endif
+                                    <input name="email" type="email" class="form-control" value="{{ old('email', $user->email) }}" placeholder="Entry Email">
+                                    @error('email')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
 
+                                <!-- Password -->
                                 <div class="form-group">
                                     <label for="password">Password</label>
                                     <input name="password" type="password" class="form-control" placeholder="Kosongkan jika tidak ingin mengubah password">
-                                    @if($errors->has('password'))
-                                        <span class="required text-danger">{{ $errors->first('password') }}</span>
-                                    @endif
+                                    @error('password')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
 
+                                <!-- Konfirmasi Password -->
                                 <div class="form-group">
                                     <label for="password_confirmation">Konfirmasi Password</label>
                                     <input name="password_confirmation" type="password" class="form-control" placeholder="Kosongkan jika tidak ingin mengubah password">
-                                    @if($errors->has('password_confirmation'))
-                                        <span class="required text-danger">{{ $errors->first('password_confirmation') }}</span>
-                                    @endif
+                                    @error('password_confirmation')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
+
+                                <!-- Role -->
+                                @if(Auth::user()->id !== $user->id)
+                                    <div class="form-group">
+                                        <label for="role">Role</label>
+                                        <select id="role" name="role" class="form-control">
+                                            <option value="">Pilih Role</option>
+                                            <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
+                                            <option value="staff" {{ old('role', $user->role) == 'staff' ? 'selected' : '' }}>Staff</option>
+                                            <option value="sales" {{ old('role') == 'sales' ? 'selected' : '' }}>Sales</option>
+                                            <option value="user" {{ old('role', $user->role) == 'user' ? 'selected' : '' }}>User</option>
+                                        </select>
+                                        @error('role')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                @endif
 
                                 <div class="form-group">
-                                    <label for="role">Role</label>
-                                    <select id="role" name="role" class="form-control">
-                                        <option value="">Pilih Role</option>
-                                        <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin</option>
-                                        <option value="staff" {{ $user->role == 'staff' ? 'selected' : '' }}>Staff</option>
-                                        <option value="user" {{ $user->role == 'user' ? 'selected' : '' }}>User</option>
-                                    </select>
-                                    @if($errors->has('role'))
-                                        <span class="required text-danger">{{ $errors->first('role') }}</span>
-                                    @endif
+                                    <label for="no_goodang">No Goodang</label>
+                                    <input name="no_goodang" type="text" class="form-control" placeholder="Masukkan No Goodang (Opsional)" value="{{ old('no_goodang') }}">
+                                    @error('no_goodang')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
 
-                                <!-- Kolom Gudang -->
-                                <div class="form-group {{ $user->role == 'staff' ? '' : 'd-none' }}" id="gudang-container">
+                                <!-- Gudang -->
+                                <div class="form-group {{ old('role', $user->role) == 'staff' ? '' : 'd-none' }}" id="gudang-container">
                                     <label for="id_gudang">Tugaskan ke Gudang</label>
                                     <select name="id_gudang" class="form-control">
                                         <option value="">Pilih Gudang</option>
                                         @foreach($gudang as $item)
-                                            <option value="{{ $item->id }}" {{ $user->id_gudang == $item->id ? 'selected' : '' }}>
+                                            <option value="{{ $item->id }}" {{ old('id_gudang', $user->id_gudang) == $item->id ? 'selected' : '' }}>
                                                 {{ $item->nama }}
                                             </option>
                                         @endforeach
                                     </select>
-                                    @if($errors->has('id_gudang'))
-                                        <span class="required text-danger">{{ $errors->first('id_gudang') }}</span>
-                                    @endif
+                                    @error('id_gudang')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
 
+                                <!-- Nomor Telepon -->
+                                <div class="form-group">
+                                    <label for="nomor_telepon">Nomor Telepon</label>
+                                    <input id="telepon" name="nomor_telepon" type="text" class="form-control" value="{{ old('nomor_telepon', $user->nomor_telepon) }}" placeholder="Nomor Telepon">
+                                    @error('nomor_telepon')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <!-- Alamat -->
+                                <div class="form-group">
+                                    <label for="alamat">Alamat</label>
+                                    <textarea name="alamat" class="form-control" rows="3" placeholder="Masukkan alamat lengkap">{{ old('alamat', $user->alamat) }}</textarea>
+                                    @error('alamat')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <!-- Tombol Submit -->
                                 <button type="submit" class="btn btn-primary my-3">
                                     <i class="fa fa-save"></i> Update
                                 </button>
@@ -106,11 +141,11 @@
 </div>
 
 <script>
-    // Mengatur dropdown gudang
-    document.getElementById('role').addEventListener('change', function () {
+    // Mengatur visibilitas dropdown gudang
+    document.getElementById('role')?.addEventListener('change', function () {
         const role = this.value;
         const gudangContainer = document.getElementById('gudang-container');
-        
+
         if (role === 'staff') {
             gudangContainer.classList.remove('d-none');
         } else {

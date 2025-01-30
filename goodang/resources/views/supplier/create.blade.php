@@ -36,7 +36,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label>No Telepon</label>
-                                    <input name="telepon" type="text" class="form-control" placeholder="Masukkan Telepon Supplier">
+                                    <input id="telepon" name="telepon" type="text" class="form-control" placeholder="Contoh: 08123456789">
                                     @if($errors->has('telepon'))
                                     <span class="required text-danger">{{$errors->first('telepon') }}</span>
                                     @endif
@@ -60,7 +60,5 @@
         </div>
     </div>
 </div>
-
-<!-- Add Google Maps API Script -->
 
 @endsection

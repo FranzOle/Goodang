@@ -10,27 +10,18 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $users = user::orderby('created_at', 'DESC')->get();
+        $users = User::with('gudang')->orderby('created_at', 'DESC')->get();
         return view('users.index', compact('users'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $gudang = Gudang::all();
         return view('users.create', compact('gudang'));
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+//'no_telepon' => 'required|min:10|max:17|unique:clients,no_telepon',
     public function store(Request $request)
     {
         $this->validate($request, [
@@ -38,80 +29,85 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',
             'role' => 'required',
-            'id_gudang' => $request->role == 'staff' ? 'required' : 'nullable',
+            'nomor_telepon' => 'required|min:10|max:19|unique:users,nomor_telepon',
+            'no_goodang' => 'nullable|unique:users,no_goodang',
+            'alamat' => 'required|max:255',
+            'id_gudang' => $request->role == 'staff' ? 'required|exists:gudangs,id' : 'nullable',
         ]);
 
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->role = $request->role;
-        $user->id_gudang = $request->role == 'staff' ? $request->id_gudang : null;
-        $user->save();
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => $request->role,
+            'nomor_telepon' => $request->nomor_telepon,
+            'no_goodang' => $request->no_goodang,
+            'alamat' => $request->alamat,
+            'id_gudang' => $request->role == 'staff' ? $request->id_gudang : null,
+        ]);
 
-        flash('User  baru telah ditambahkan')->success();
+        flash('User baru berhasil ditambahkan.')->success();
         return redirect()->route('users.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $user = User::with('gudang')->findOrFail($id);
+        return view('users.show', compact('user'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit($id)
     {
         $user = User::findOrFail($id);
         $gudang = Gudang::all();
         return view('users.edit', compact('user', 'gudang'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
         $this->validate($request, [
             'name' => 'required|min:2|max:50',
             'email' => 'required|email|unique:users,email,' . $id,
             'password' => 'nullable|min:6|confirmed',
             'role' => 'required',
-            'id_gudang' => $request->role == 'staff' ? 'required' : 'nullable',
+            'nomor_telepon' => 'required|min:10|max:19|unique:users,nomor_telepon,' . $id,
+            'no_goodang' => 'nullable|unique:users,no_goodang,' . $id,
+            'alamat' => 'required|max:255',
+            'id_gudang' => $request->role == 'staff' ? 'required|exists:gudangs,id' : 'nullable',
         ]);
-    
+
         $user = User::findOrFail($id);
-        $user->name = $request->name;
-        $user->email = $request->email;
-        
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
+
+        if (Auth::user()->id === $user->id && Auth::user()->role === 'admin') {
+            $request->merge(['role' => $user->role]); // Abaikan perubahan role
         }
-        $user->role = $request->role;
-        $user->id_gudang = $request->role == 'staff' ? $request->id_gudang : null;
-        $user->save();
-    
-        flash('Data user telah diperbarui')->success();
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->filled('password') ? Hash::make($request->password) : $user->password,
+            'role' => $request->role,
+            'nomor_telepon' => $request->nomor_telepon,
+            'no_goodang' => $request->no_goodang,
+            'alamat' => $request->alamat,
+            'id_gudang' => $request->role == 'staff' ? $request->id_gudang : null,
+        ]);
+
+        flash('Data user berhasil diperbarui.')->success();
         return redirect()->route('users.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy($id)
     {
         $user = User::findOrFail($id);
         $user->delete();
 
-        flash('User telah dihapus')->success();
+        flash('User berhasil dihapus.')->success();
         return redirect()->route('users.index');
     }
 
-    public function logout () {
+    public function logout()
+    {
         Auth::logout();
         return redirect('/login');
     }

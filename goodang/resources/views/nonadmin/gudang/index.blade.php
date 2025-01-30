@@ -47,11 +47,9 @@
                                 <td>{{ ++$key }}</td>
                                 <td>{{ $gudang->nama ?? '' }}</td>
                                 <td>{{ $gudang->alamat ?? '' }}</td>
-                                <td>
-                                  <a href="{{ route('staffgudang.show', $gudang->id) }}" class="btn btn-sm btn-outline-info">
-                                  <i class="fa fa-eye me-2"></i> Show
-                                </a>
-                              </td>
+                                <td><a href="{{ route('staffgudang.show', $gudang->id) }}" class="btn btn-sm btn-outline-info">
+                                  <i class="fa fa-eye me-2"></i>
+                              </a></td>
                             </tr>
                         @endforeach
                     @endif

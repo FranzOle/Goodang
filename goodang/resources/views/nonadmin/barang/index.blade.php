@@ -26,9 +26,6 @@
           <div class="card card-primary card-outline">
             <div class="card-body">
               <h5 class="card-title">List Barang</h5><br>
-              <a class="btn btn-sm btn-primary me-4" href="{{ route('barang.create') }}">
-                <i class="fa fa-solid fa-plus me-2"></i> Tambah Data
-            </a>
             <a class="btn btn-sm btn-danger" href="{{ route('barang.export') }}">
               <i class="fa fa-file-pdf me-2"></i> Export PDF
           </a>
@@ -42,7 +39,7 @@
                         <th>Gambar</th>
                         <th>Kode SKU</th>
                         <th>Supplier</th>
-                        <th>Aksi</th>
+                        <th>Harga</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -50,7 +47,7 @@
                         @foreach($barang as $key => $item)
                             <tr>
                                 <td>{{ ++$key }}</td>
-                                <td>{{ $item->nama ?? '' }}</td>
+                                <td><a href="{{ route('staffbarang.show', $item->id) }}">{{ $item->nama ?? '' }}</a></td>
                                 <td>
                                     @if($item->gambar)
                                         <img src="{{ asset('storage/' . $item->gambar) }}" alt="Gambar Barang" class="rounded-circle shadow img-fluid" style="width: 75px; height: 75px; object-fit: cover;">
@@ -60,11 +57,7 @@
                                 </td>
                                 <td>{{ $item->kode_sku ?? '' }}</td>
                                 <td>{{ $item->supplier->nama ?? '' }}</td>
-                                <td>
-                                  <a href="{{ route('staffbarang.show', $item->id) }}" class="btn btn-sm btn-outline-info">
-                                    <i class="fa fa-eye me-2"></i> Show
-                                </a>                   
-                                </td>
+                                <td class="harga-barang format-harga" data-harga="{{ $item->harga }}">{{ $item->harga ?? ''}}</td>
                             </tr>
                         @endforeach
                     @endif

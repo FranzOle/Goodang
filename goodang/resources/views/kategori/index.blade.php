@@ -48,14 +48,14 @@
                                   <td>{{ $kategori->nama ?? '' }}</td>
                                   <td>
                                       <a href="{{ route('kategori.show', $kategori->id) }}" class="btn btn-sm btn-outline-info">
-                                          <i class="fa fa-eye me-2"></i> Show
+                                          <i class="fa fa-eye me-2"></i>
                                       </a>
                                       @if(Auth::check() && Auth::user()->role === 'admin')
                                           <a href="{{ route('kategori.edit', $kategori->id) }}" class="btn btn-sm btn-outline-primary">
-                                              <i class="fa fa-edit me-2"></i> Edit
+                                              <i class="fa fa-edit me-2"></i>
                                           </a>
                                           <a href="javascript:;" class="btn btn-sm btn-outline-danger sa-delete" data-form-id="kategori-delete{{ $kategori->id }}" method="post">
-                                              <i class="fa fa-solid fa-trash me-2"></i> Hapus
+                                              <i class="fa fa-solid fa-trash me-2"></i>
                                           </a>
                                           <form id="kategori-delete{{ $kategori->id }}" action="{{ route('kategori.destroy', $kategori->id) }}" method="POST" style="display:none;">
                                               @csrf

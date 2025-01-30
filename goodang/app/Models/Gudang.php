@@ -25,4 +25,10 @@ class Gudang extends Model
         return $this->hasMany(User::class, 'id_gudang');
     }
 
+    public function saleDetails()
+    {
+        return $this->hasMany(SaleDetail::class, 'id_gudang');
+    }
+
+
 }

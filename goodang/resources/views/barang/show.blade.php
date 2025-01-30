@@ -14,7 +14,6 @@
                     <li class="breadcrumb-item active">Detail Barang</li>
                 </ol>
             </div>
-            
         </div>
     </div>
 </div>
@@ -22,7 +21,7 @@
 <div class="content">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-6">
+            <div class="col-lg-6 col-sm-12 col-12">
                 <div class="card card-primary card-outline">
                     <div class="card-body">
                         <h5>Informasi Barang</h5>
@@ -46,6 +45,10 @@
                             <tr>
                                 <th>Supplier</th>
                                 <td>{{ $barang->supplier->nama ?? 'Tidak ada supplier' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Harga</th>
+                                <td class="harga-barang format-harga" data-harga="{{ $barang->harga }}"></td>
                             </tr>
                             <tr>
                                 <th>Gambar</th>

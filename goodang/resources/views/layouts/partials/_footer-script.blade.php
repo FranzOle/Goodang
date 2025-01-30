@@ -12,6 +12,7 @@
 <script src="{{asset('admin/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js')}}"></script>
 <script src="{{ asset('admin/plugins/datatables-responsive/js/dataTables.responsive.min.js')}}"></script>
 <script src="{{ asset('admin/plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
+<script src="{{ asset('amdmin/plugins/chart.js/Chart.min.js')}}"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
      crossorigin=""></script>
@@ -44,50 +45,6 @@
       })
     })
 </script>
-
-{{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCXhBhotnwkINhcet42CfoZO614J_LHhNQ&callback=initMap&libraries=places" async defer></script>
-<script>
-    let map, marker;
-
-    function initMap() {
-        // Initialize the map at a default location
-        map = new google.maps.Map(document.getElementById('map'), {
-            center: { lat: -7.250445, lng: 112.768845 }, // Surabaya
-            zoom: 13,
-        });
-
-        // Add marker
-        marker = new google.maps.Marker({
-            map: map,
-            draggable: true,
-            position: map.getCenter(),
-        });
-
-        // Event listener for marker drag
-        google.maps.event.addListener(marker, 'dragend', function() {
-            const pos = marker.getPosition();
-            updateAddress(pos);
-        });
-
-        // Event listener for map click
-        map.addListener('click', function(event) {
-            marker.setPosition(event.latLng);
-            updateAddress(event.latLng);
-        });
-    }
-
-    function updateAddress(latLng) {
-        const geocoder = new google.maps.Geocoder();
-        geocoder.geocode({ location: latLng }, function(results, status) {
-            if (status === "OK" && results[0]) {
-                const address = results[0].formatted_address;
-                document.getElementById('alamat').value = address;
-            } else {
-                alert("Geocode was not successful for the following reason: " + status);
-            }
-        });
-    }
-</script> --}}
 <script>
 
   let defaultLat = {{ $item->latitude ?? -7.250445 }};
@@ -100,7 +57,6 @@
       attribution: '© OpenStreetMap'
   }).addTo(map);
 
-  // Initial marker setup if coordinates exist
   let marker;
   if ({{ isset($item->latitude) && isset($item->longitude) ? 'true' : 'false' }}) {
       marker = L.marker([defaultLat, defaultLng]).addTo(map);
@@ -165,4 +121,85 @@
 });
 
 </script>
+
+<script>
+  document.getElementById('generate-sku').addEventListener('click', function () {
+      const randomDigits = () => Math.floor(100000000 + Math.random() * 900000000);
+      const randomTwoDigits = () => Math.floor(10 + Math.random() * 90);
+      const sku = `BRG-${randomDigits()}`;
+      document.getElementById('kode_sku').value = sku;
+  });
+</script>
+
+<script>
+  document.getElementById('generate-referensi').addEventListener('click', function () {
+    const randomDigits = () => Math.floor(100000000 + Math.random() * 900000000);
+    const referensi = `TRX-${randomDigits()}`;
+    document.getElementById('kode_referensi').value = referensi;
+  });
+</script>
+
+<script>
+  function formatRupiah(angka) {
+      let number_string = angka.toString(),
+          sisa = number_string.length % 3,
+          rupiah = number_string.substr(0, sisa),
+          ribuan = number_string.substr(sisa).match(/\d{3}/g);
+  
+      if (ribuan) {
+          let separator = sisa ? '.' : '';
+          rupiah += separator + ribuan.join('.');
+      }
+  
+      return 'Rp ' + rupiah;
+  }
+
+  document.querySelectorAll('.format-harga').forEach(function(element) {
+      // Ambil nilai harga dari atribut data-harga
+      let harga = element.getAttribute('data-harga');
+      
+      // Format harga ke Rupiah
+      if (harga) {
+          element.textContent = formatRupiah(harga);
+      }
+  });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/libphonenumber-js/1.10.13/libphonenumber-js.min.js"></script>
+
+
+<script>
+      const teleponInput = document.getElementById("telepon");
+
+      teleponInput.addEventListener("input", function () {
+          let numbers = this.value.replace(/\D/g, ""); // Hapus semua karakter non-digit
+
+          // Kosongkan input jika tidak ada angka
+          if (numbers === '') {
+              this.value = '';
+              return;
+          }
+
+          // Handle nomor yang dimulai dengan 0
+          if (numbers.startsWith("0")) {
+              numbers = "62" + numbers.substring(1);
+          } 
+          // Pastikan nomor selalu dimulai dengan 62
+          else if (!numbers.startsWith("62")) {
+              numbers = "62" + numbers;
+          }
+
+          let formatted = '+62';
+          const digits = numbers.substring(2); // Ambil angka setelah 62
+
+          if (digits) {
+              // Format angka menjadi kelompok 3 digit dengan hyphen
+              formatted += ' ' + digits.replace(/(\d{3})(?=\d)/g, '$1-');
+          }
+
+          // Update nilai input
+          this.value = formatted;
+      });
+</script>
+
 @stack('scripts')

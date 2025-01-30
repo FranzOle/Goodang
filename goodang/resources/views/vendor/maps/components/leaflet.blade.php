@@ -17,7 +17,6 @@
 @endif
 ></div>
 
-<!-- Make sure you put this AFTER Leaflet's CSS -->
 <script src="{{'https://unpkg.com/leaflet@' . $leafletVersion . '/dist/leaflet.js'}}"
         crossorigin=""></script>
 <script>

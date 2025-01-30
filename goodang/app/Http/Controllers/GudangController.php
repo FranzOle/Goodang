@@ -44,10 +44,10 @@ class GudangController extends Controller
         return redirect()->route('gudang.index');
     }
 
-        public function show(string $id)
+    public function show(string $id)
     {
-        $gudang = Gudang::with(['jumlahstok.barang'])->findOrFail($id);
-
+        $gudang = Gudang::with(['jumlahstok.barang', 'user'])->findOrFail($id);
+    
         return view('gudang.show', compact('gudang'));
     }
     /**

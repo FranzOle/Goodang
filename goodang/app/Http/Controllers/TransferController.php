@@ -8,6 +8,7 @@ use App\Models\JumlahStok;
 use App\Models\Barang;
 use App\Models\Gudang;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; 
 use Illuminate\Support\Facades\DB;
 
 class TransferController extends Controller
@@ -17,10 +18,7 @@ class TransferController extends Controller
      */
     public function create()
     {
-        // Ambil semua gudang
         $gudangs = Gudang::all();
-
-        // Tampilkan form transfer
         return view('transaksi.transfer', compact('gudangs'));
     }
 
@@ -43,27 +41,25 @@ class TransferController extends Controller
         DB::beginTransaction();
 
         try {
-            // Simpan data utama transaksi untuk gudang asal (keluar)
             $transaksiOut = Transaksi::create([
                 'id_gudang' => $request->gudang_asal,
                 'kode_referensi' => $request->kode_referensi . '-OUT',
                 'tanggal' => $request->tanggal,
                 'deskripsi_tujuan' => 'Transfer ke Gudang ID: ' . $request->gudang_tujuan,
                 'stock_type' => 'out',
+                'id_user' => Auth::id(),
             ]);
 
-            // Simpan data utama transaksi untuk gudang tujuan (masuk)
             $transaksiIn = Transaksi::create([
                 'id_gudang' => $request->gudang_tujuan,
                 'kode_referensi' => $request->kode_referensi . '-IN',
                 'tanggal' => $request->tanggal,
                 'deskripsi_tujuan' => 'Transfer dari Gudang ID: ' . $request->gudang_asal,
                 'stock_type' => 'in',
+                'id_user' => Auth::id(), 
             ]);
 
-            // Loop untuk setiap barang yang ditransfer
             foreach ($request->stok as $stok) {
-                // Validasi stok tersedia di gudang asal
                 $jumlahStokAsal = JumlahStok::where('id_barang', $stok['id_barang'])
                     ->where('id_gudang', $request->gudang_asal)
                     ->first();
@@ -72,11 +68,9 @@ class TransferController extends Controller
                     throw new \Exception("Stok tidak mencukupi untuk Barang ID: {$stok['id_barang']}");
                 }
 
-                // Kurangi stok di gudang asal
                 $jumlahStokAsal->kuantitas -= $stok['kuantitas'];
                 $jumlahStokAsal->save();
 
-                // Tambah stok di gudang tujuan
                 $jumlahStokTujuan = JumlahStok::firstOrNew([
                     'id_barang' => $stok['id_barang'],
                     'id_gudang' => $request->gudang_tujuan,
@@ -84,14 +78,11 @@ class TransferController extends Controller
                 $jumlahStokTujuan->kuantitas += $stok['kuantitas'];
                 $jumlahStokTujuan->save();
 
-                // Simpan detail transaksi keluar (gudang asal)
                 TransaksiDetail::create([
                     'id_transaksi' => $transaksiOut->id,
                     'id_barang' => $stok['id_barang'],
                     'kuantitas' => $stok['kuantitas'],
                 ]);
-
-                // Simpan detail transaksi masuk (gudang tujuan)
                 TransaksiDetail::create([
                     'id_transaksi' => $transaksiIn->id,
                     'id_barang' => $stok['id_barang'],
@@ -101,7 +92,7 @@ class TransferController extends Controller
 
             DB::commit();
 
-            flash('transaksi berhasil')->success();
+            flash('Transaksi berhasil')->success();
             return redirect()->route('barang.index');
         } catch (\Exception $e) {
             DB::rollBack();

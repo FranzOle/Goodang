@@ -48,18 +48,15 @@
                         @foreach($supplier as $key => $supplier)
                             <tr>
                                 <td>{{ ++$key }}</td>
-                                <td>{{ $supplier->nama ?? '' }}</td>
+                                <td><a href="{{ route('supplier.show', $supplier->id) }}">{{ $supplier->nama ?? '' }}</a></td>
                                 <td>{{ $supplier->telepon ?? '' }}</td>
                                 <td>{{ $supplier->alamat ?? '' }}</td>
                                 <td>
-                                  <a href="{{ route('supplier.show', $supplier->id) }}" class="btn btn-sm btn-outline-info">
-                                    <i class="fa fa-eye me-2"></i> Show
-                                </a>
                                     <a href="{{ route('supplier.edit', $supplier->id) }}" class="btn btn-sm btn-outline-primary">
-                                        <i class="fa fa-edit me-2"></i> Edit
+                                        <i class="fa fa-edit me-2"></i>
                                     </a>
                                     <a href="javascript:;" class="btn btn-sm btn-outline-danger sa-delete" data-form-id="supplier-delete{{ $supplier->id }}" method="post">
-                                        <i class="fa fa-solid fa-trash me-2"></i> Hapus
+                                        <i class="fa fa-solid fa-trash me-2"></i>
                                     </a>
                                     <form id="supplier-delete{{ $supplier->id }}" action="{{ route('supplier.destroy', $supplier->id) }}" method="POST" style="display:none;">
                                         @csrf

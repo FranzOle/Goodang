@@ -40,20 +40,20 @@
                     @endif
                   </div>
                   <div class="form-group">
-                    <label for="exampleInputEmail1">No Telepon</label>
-                    <input name="telepon" type="text" class="form-control" placeholder="Masukkan Telepon Supplier" value="{{ $supplier->telepon}}">
+                    <label>No Telepon</label>
+                    <input id="telepon" name="telepon" type="text" class="form-control" placeholder="Contoh: 08123456789" value="{{ old('telepon', $supplier->telepon) }}">
                     @if($errors->has('telepon'))
                     <span class="required text-danger">{{$errors->first('telepon') }}</span>
                     @endif
-                  </div>
+                </div>
                   <div class="form-group">
-                    <label for="exampleInputEmail1">Alamat</label>
-                    <input name="alamat" type="text" class="form-control" placeholder="Masukkan alamat Supplier" value="{{ $supplier->alamat}}">
+                    <label>Alamat</label>
+                    <input id="alamat" name="alamat" type="text" class="form-control" placeholder="Pilih alamat dari peta" value="{{ old('alamat', $supplier->alamat) }}">
                     @if($errors->has('alamat'))
-                    <span class="required text-danger">{{$errors->first('alamat') }}</span>
+                    <span class="text-danger">{{ $errors->first('alamat') }}</span>
                     @endif
-                  </div>
-                  <div id="map" style="height: 300px; width: 100%;"></div>
+                </div>
+                <div id="map" style="height: 300px; width: 100%;"></div>
                   <button type="submit" class="btn btn-primary my-3"><li class="fa fa-save"></li>Submit</button>
                 </div>
                 <!-- /.card-body -->

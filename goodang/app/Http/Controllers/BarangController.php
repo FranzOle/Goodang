@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Barang;
 use App\Models\Kategori;
 use App\Models\Supplier;
-use App\Models\JumlahStok;
-use App\Models\Gudang;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -34,33 +32,19 @@ class BarangController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-
-     /**
- * Display the specified resource along with stock details.
- */
-    public function show(string $id)
-    {
-        $barang = Barang::with(['kategori', 'supplier', 'jumlahstok.gudang'])->findOrFail($id);
-        return view('barang.show', compact('barang'));
-    }
-
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $request->validate([
             'id_kategori' => 'required|exists:kategoris,id',
             'id_supplier' => 'required|exists:suppliers,id',
             'kode_sku' => 'required|unique:barangs,kode_sku',
             'nama' => 'required|min:2|max:100',
-            'deskripsi' => 'nullable|max:255',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:10000'
+            'deskripsi' => 'nullable|max:755',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:10000',
+            'harga' => 'required|numeric|min:0',
         ]);
 
-        $barang = new Barang();
-        $barang->id_kategori = $request->id_kategori;
-        $barang->id_supplier = $request->id_supplier;
-        $barang->kode_sku = $request->kode_sku;
-        $barang->nama = $request->nama;
-        $barang->deskripsi = $request->deskripsi;
+        $barang = new Barang($request->only(['id_kategori', 'id_supplier', 'kode_sku', 'nama', 'deskripsi', 'harga']));
 
         if ($request->hasFile('gambar')) {
             $barang->gambar = $request->file('gambar')->store('barang', 'public');
@@ -69,7 +53,16 @@ class BarangController extends Controller
         $barang->save();
 
         flash('Barang baru telah ditambahkan')->success();
-        return redirect()->route('barang.index');
+        return back();
+    }
+
+    /**
+     * Display the specified resource along with stock details.
+     */
+    public function show(string $id)
+    {
+        $barang = Barang::with(['kategori', 'supplier', 'jumlahstok.gudang'])->findOrFail($id);
+        return view('barang.show', compact('barang'));
     }
 
     /**
@@ -88,21 +81,18 @@ class BarangController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $this->validate($request, [
+        $request->validate([
             'id_kategori' => 'required|exists:kategoris,id',
             'id_supplier' => 'required|exists:suppliers,id',
             'kode_sku' => 'required|unique:barangs,kode_sku,' . $id,
             'nama' => 'required|min:2|max:100',
-            'deskripsi' => 'nullable|max:255',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:10000'
+            'deskripsi' => 'nullable|max:755',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:10000',
+            'harga' => 'required|numeric|min:0',
         ]);
 
         $barang = Barang::findOrFail($id);
-        $barang->id_kategori = $request->id_kategori;
-        $barang->id_supplier = $request->id_supplier;
-        $barang->kode_sku = $request->kode_sku;
-        $barang->nama = $request->nama;
-        $barang->deskripsi = $request->deskripsi;
+        $barang->fill($request->only(['id_kategori', 'id_supplier', 'kode_sku', 'nama', 'deskripsi', 'harga']));
 
         if ($request->hasFile('gambar')) {
             if ($barang->gambar) {
@@ -123,11 +113,13 @@ class BarangController extends Controller
     public function destroy(string $id)
     {
         $barang = Barang::findOrFail($id);
+
         if ($barang->gambar) {
             \Storage::delete('public/' . $barang->gambar);
         }
+
         $barang->jumlahstok()->delete();
-        $barang->transaksidetail()->delete();
+        $barang->transaksidetail()->delete(); 
         $barang->delete();
 
         flash('Barang telah dihapus')->success();
@@ -135,7 +127,7 @@ class BarangController extends Controller
     }
 
     /**
-     * Export data barang to PDF.
+     * Export all items as a PDF.
      */
     public function export()
     {
@@ -144,16 +136,13 @@ class BarangController extends Controller
         return $pdf->download('data_barang.pdf');
     }
 
+    /**
+     * Export a single item as a PDF.
+     */
     public function export_show(string $id)
     {
-        // Ambil data barang bersama dengan kategori, supplier, dan stok
         $barang = Barang::with(['kategori', 'supplier', 'jumlahstok.gudang'])->findOrFail($id);
-
-        // Load view untuk PDF dengan data barang
         $pdf = Pdf::loadView('barang.pdf_show', compact('barang'));
-
-        // Download PDF
         return $pdf->download('barang_' . $barang->kode_sku . '.pdf');
     }
-
 }

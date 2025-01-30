@@ -42,6 +42,7 @@
                         <th>Gambar</th>
                         <th>Kode SKU</th>
                         <th>Supplier</th>
+                        <th>Harga</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -50,7 +51,7 @@
                         @foreach($barang as $key => $item)
                             <tr>
                                 <td>{{ ++$key }}</td>
-                                <td>{{ $item->nama ?? '' }}</td>
+                                <td><a href="{{ route('barang.show', $item->id) }}">{{ $item->nama ?? '' }}</a></td>
                                 <td>
                                     @if($item->gambar)
                                         <img src="{{ asset('storage/' . $item->gambar) }}" alt="Gambar Barang" class="rounded-circle shadow img-fluid" style="width: 75px; height: 75px; object-fit: cover;">
@@ -60,15 +61,13 @@
                                 </td>
                                 <td>{{ $item->kode_sku ?? '' }}</td>
                                 <td>{{ $item->supplier->nama ?? '' }}</td>
+                                <td class="harga-barang format-harga" data-harga="{{ $item->harga }}">{{ $item->harga ?? ''}}</td>
                                 <td>
-                                  <a href="{{ route('barang.show', $item->id) }}" class="btn btn-sm btn-outline-info">
-                                    <i class="fa fa-eye me-2"></i> Show
-                                </a>
                                     <a href="{{ route('barang.edit', $item->id) }}" class="btn btn-sm btn-outline-primary">
-                                        <i class="fa fa-edit me-2"></i> Edit
+                                        <i class="fa fa-edit me-2"></i>
                                     </a>
                                     <a href="javascript:;" class="btn btn-sm btn-outline-danger sa-delete" data-form-id="barang-delete{{ $item->id }}" method="post">
-                                        <i class="fa fa-solid fa-trash me-2"></i> Hapus
+                                        <i class="fa fa-solid fa-trash me-2"></i>
                                     </a>
                                     <form id="barang-delete{{ $item->id }}" action="{{ route('barang.destroy', $item->id) }}" method="POST" style="display:none;">
                                         @csrf

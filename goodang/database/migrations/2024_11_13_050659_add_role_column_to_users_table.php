@@ -15,7 +15,6 @@ return new class extends Migration
             $table->string('role')->nullable()->default('user')->after('email');
         });
         
-        // Set a default role for existing users if necessary
         DB::table('users')->whereNull('role')->update(['role' => 'user']);
     }
 

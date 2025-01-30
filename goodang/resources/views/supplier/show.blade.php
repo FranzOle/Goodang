@@ -36,6 +36,7 @@
                                         <th>Nama Barang</th>
                                         <th>Gambar</th>
                                         <th>Kode SKU</th>
+                                        <th>Harga</th>
                                         <th>Kategori</th>
                                     </tr>
                                 </thead>
@@ -43,7 +44,7 @@
                                     @foreach($supplier->barang as $key => $item)
                                         <tr>
                                             <td>{{ ++$key }}</td>
-                                            <td>{{ $item->nama ?? 'N/A' }}</td>
+                                            <td><a href="{{ route('barang.show', $item->id) }}">{{ $item->nama ?? '' }}</a></td>
                                             <td>
                                                 @if($item->gambar)
                                                     <img src="{{ asset('storage/' . $item->gambar) }}" alt="Gambar Barang" class="rounded-circle shadow img-fluid" style="width: 75px; height: 75px; object-fit: cover;">
@@ -52,6 +53,7 @@
                                                 @endif
                                             </td>
                                             <td>{{ $item->kode_sku ?? 'N/A' }}</td>
+                                            <td class="harga-barang format-harga" data-harga="{{ $item->harga }}">{{ $item->harga ?? ''}}</td>
                                             <td>{{ $item->kategori->nama ?? 'N/A' }}</td>
                                         </tr>
                                     @endforeach

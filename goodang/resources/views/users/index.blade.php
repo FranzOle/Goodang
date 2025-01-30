@@ -21,7 +21,7 @@
   <div class="content">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-lg-10">
+        <div class="col-lg-12">
 
           <div class="card card-primary card-outline">
             <div class="card-body">
@@ -46,23 +46,29 @@
                         @foreach($users as $key => $user)
                             <tr>
                                 <td>{{ ++$key }}</td>
-                                <td>{{ $user->name ?? '' }}</td>
+                                <td>
+                                  <a href="{{ route('users.show', $user->id) }}">{{ $user->name ?? '' }}</a>
+                              </td>                              
                                 <td>{{ $user->email ?? '' }} @if(auth()->id() == $user->id) (Anda) @endif</td>
                                 <td>{{ ucfirst($user->role) ?? '' }}</td>
                                 <td>
                                     @if($user->role === 'staff')
                                         {{ $user->gudang->nama ?? '-' }}
+                                    @elseif($user->role ==='admin')
+                                        Mengatur Semua
+                                    @elseif($user->role ==='sales')
+                                        Melakukan Penjualan
                                     @else
                                         -
                                     @endif
                                 </td>
                                 <td>
                                     <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-outline-primary">
-                                        <i class="fa fa-edit me-2"></i> Edit
+                                        <i class="fa fa-edit me-2"></i>
                                     </a>
                                     @if(auth()->id() != $user->id)
                                     <a href="javascript:;" class="btn btn-sm btn-outline-danger sa-delete" data-form-id="users-delete{{ $user->id }}" method="post">
-                                        <i class="fa fa-solid fa-trash me-2"></i> Hapus
+                                        <i class="fa fa-solid fa-trash me-2"></i>
                                     </a>
                                     <form id="users-delete{{ $user->id }}" action="{{ route('users.destroy', $user->id) }}" method="POST" style="display:none;">
                                         @csrf

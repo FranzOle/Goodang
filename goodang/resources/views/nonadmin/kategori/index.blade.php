@@ -49,7 +49,8 @@
                         @foreach($kategori as $key => $kategori)
                             <tr>
                                 <td>{{ ++$key }}</td>
-                                <td>{{ $kategori->nama ?? '' }}</td>
+
+                                <td><a href="{{ route('staffkategori.show', $kategori->id) }}">{{ $kategori->nama ?? '' }}</a></td>
                                 {{-- <td>
                                   @if(Auth::check() && Auth::user()->role === 'admin')
                                       <a href="{{ route('kategori.edit', $kategori->id) }}" class="btn btn-sm btn-outline-primary">

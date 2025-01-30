@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Barang extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
-    protected $fillable = ['id_kategori', 'id_supplier', 'kode_sku', 'nama', 'deskripsi', 'gambar'];
+    protected $fillable = ['id_kategori', 'id_supplier', 'kode_sku', 'nama', 'deskripsi', 'gambar', 'harga'];	
 
     public function kategori()
     {
@@ -30,4 +32,9 @@ class Barang extends Model
     {
         return $this->hasMany(TransaksiDetail::class, 'id_barang');
     } 
+
+    public function saleDetails()
+    {
+        return $this->hasMany(SaleDetail::class, 'id_barang');
+    }
 }

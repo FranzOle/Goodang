@@ -54,7 +54,12 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Kode SKU</label>
-                                    <input name="kode_sku" type="text" class="form-control" placeholder="Masukkan Kode SKU">
+                                    <div class="input-group">
+                                        <input id="kode_sku" name="kode_sku" type="text" class="form-control" placeholder="Masukkan Kode SKU">
+                                        <div class="input-group-append">
+                                            <button type="button" id="generate-sku" class="btn btn-primary">Generate</button>
+                                        </div>
+                                    </div>
                                     @if($errors->has('kode_sku'))
                                     <span class="required text-danger">{{ $errors->first('kode_sku') }}</span>
                                     @endif
@@ -74,6 +79,13 @@
                                     @endif
                                 </div>
                                 <div class="form-group">
+                                    <label>Harga Barang</label>
+                                    <input id="harga" name="harga" type="text" class="form-control" placeholder="Masukkan Harga Barang">
+                                    @if($errors->has('harga'))
+                                    <span class="required text-danger">{{ $errors->first('harga') }}</span>
+                                    @endif
+                                </div>
+                                <div class="form-group">
                                     <label>Gambar Barang</label>
                                     <input name="gambar" type="file" class="form-control">
                                     @if($errors->has('gambar'))
@@ -88,8 +100,23 @@
                     </div>
                 </div>
             </div>
-            <!-- Card Inisialisasi Stok Barang -->
         </div>
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    const hargaInput = document.getElementById('harga');
+    const hiddenHargaInput = document.createElement('input');
+    hiddenHargaInput.type = 'hidden';
+    hiddenHargaInput.name = 'harga';
+    hargaInput.parentNode.appendChild(hiddenHargaInput);
+
+    hargaInput.addEventListener('input', function (e) {
+        let value = e.target.value.replace(/\D/g, '');
+        hiddenHargaInput.value = value; // Simpan nilai numerik ke hidden input
+        e.target.value = 'Rp. ' + new Intl.NumberFormat('id-ID').format(value); // Tampilkan format rupiah dengan tanda "Rp."
+    });
+</script>
+@endpush

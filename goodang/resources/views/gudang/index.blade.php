@@ -47,17 +47,15 @@
                         @foreach($gudang as $key => $gudang)
                             <tr>
                                 <td>{{ ++$key }}</td>
-                                <td>{{ $gudang->nama ?? '' }}</td>
+                                <td><a href="{{ route('gudang.show', $gudang->id)}}">{{ $gudang->nama ?? '' }}</a></td>
                                 <td>{{ $gudang->alamat ?? '' }}</td>
                                 <td>
-                                  <a href="{{ route('gudang.show', $gudang->id) }}" class="btn btn-sm btn-outline-info">
-                                    <i class="fa fa-eye me-2"></i> Show
-                                </a>
+                                  
                                     <a href="{{ route('gudang.edit', $gudang->id) }}" class="btn btn-sm btn-outline-primary">
-                                        <i class="fa fa-edit me-2"></i> Edit
+                                        <i class="fa fa-edit me-2"></i>
                                     </a>
                                     <a href="javascript:;" class="btn btn-sm btn-outline-danger sa-delete" data-form-id="gudang-delete{{ $gudang->id }}" method="post">
-                                        <i class="fa fa-solid fa-trash me-2"></i> Hapus
+                                        <i class="fa fa-solid fa-trash me-2"></i>
                                     </a>
                                     <form id="gudang-delete{{ $gudang->id }}" action="{{ route('gudang.destroy', $gudang->id) }}" method="POST" style="display:none;">
                                         @csrf

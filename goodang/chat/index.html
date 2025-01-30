@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goodang Chatbot</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@google/generative-ai@latest/dist/umd/index.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Added jQuery -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> <!-- Bootstrap JS -->
+    <style>
+        body {
+            background-color: #f0f0f0;
+        }
+        .chat-box {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .message {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 10px;
+            max-width: 75%;
+        }
+        .message-user {
+            background-color: #0078D7;
+            color: white;
+            margin-left: auto;
+        }
+        .message-bot {
+            background-color: #e1e8ed;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center mt-4">
+            <div class="col-12 col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h4>Goodang Chatbot</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="chat-box" id="chat-box">
+                            <!-- Chat messages will appear here -->
+                        </div>
+                        <div class="d-flex">
+                            <input type="text" id="user-input" class="form-control" placeholder="Type your message..." />
+                            <button class="btn btn-primary ms-2" id="send-btn">Send</button>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center">
+                        <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#itemModal">Generate Deskripsi</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for selecting item -->
+    <div class="modal fade" id="itemModal" tabindex="-1" aria-labelledby="itemModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="itemModalLabel">Pilih Barang</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nama Barang</th>
+                                <th scope="col">Kategori</th>
+                                <th scope="col">Supplier</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="barang-list">
+                            <!-- Items will be dynamically loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Gemini AI
+        const genAI = new google.generativeAI.GoogleGenerativeAI('AIzaSyCC_CaHgYnsSe63Or_d7UaOBZCd4qTJM8A'); // Replace with your actual API key
+
+        const model = genAI.getGenerativeModel({
+            model: "gemini-2.0-flash-exp",
+            systemInstruction: "You are an AI assistant specialized in warehouse management systems.",
+        });
+
+        const generationConfig = {
+            temperature: 1,
+            topP: 0.95,
+            topK: 40,
+            maxOutputTokens: 8192,
+            responseMimeType: "text/plain",
+        };
+
+        const chatSession = model.startChat({
+            generationConfig,
+            history: [],
+        });
+
+        // Add message to chatbox
+        function addMessage(sender, message) {
+            const msgClass = sender === 'user' ? 'message-user' : 'message-bot';
+            const messageHTML = `
+                <div class="message ${msgClass}">
+                    ${message}
+                </div>
+            `;
+            document.getElementById('chat-box').innerHTML += messageHTML;
+            document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
+        }
+
+        // Send message to Gemini AI
+        async function sendMessage() {
+            const userInput = document.getElementById('user-input').value;
+            if (userInput.trim()) {
+                addMessage('user', userInput);
+                document.getElementById('user-input').value = '';
+
+                try {
+                    const result = await chatSession.sendMessage(userInput);
+                    const botReply = result.response.text();
+                    addMessage('bot', botReply);
+                } catch (error) {
+                    addMessage('bot', 'Error generating response.');
+                }
+            }
+        }
+
+        // Event listener for send button
+        document.getElementById('send-btn').addEventListener('click', sendMessage);
+
+        // Event listener for Enter key
+        document.getElementById('user-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Fetch barang data for the modal
+        function fetchBarangData() {
+            const barangData = [
+                { nama: "Item 1", kategori: "Electronics", supplier: "Supplier A" },
+                { nama: "Item 2", kategori: "Furniture", supplier: "Supplier B" },
+                { nama: "Item 3", kategori: "Groceries", supplier: "Supplier C" },
+                // Add more items as needed
+            ];
+
+            let tableRows = '';
+            barangData.forEach(item => {
+                tableRows += `
+                    <tr>
+                        <td>${item.nama}</td>
+                        <td>${item.kategori}</td>
+                        <td>${item.supplier}</td>
+                        <td><button class="btn btn-primary" onclick="generateDescription('${item.nama}', '${item.kategori}', '${item.supplier}')">Select</button></td>
+                    </tr>
+                `;
+            });
+            document.getElementById('barang-list').innerHTML = tableRows;
+        }
+
+        // Generate description based on selected item
+        function generateDescription(barangName, kategoriName, supplierName) {
+            let userPrompt = `
+                Barang: ${barangName}
+                Kategori: ${kategoriName}
+                Supplier: ${supplierName}
+                Berikan deskripsi lengkap dan kreatif tapi tidak terlalu panjang untuk produk ini.
+            `;
+            
+            // Send request to Gemini API
+            model.generateText({
+                prompt: userPrompt,
+                temperature: 1,
+                max_output_tokens: 8192,
+            })
+            .then(response => {
+                const botReply = response.choices[0].text.trim();
+                addMessage('bot', botReply);
+                $('#itemModal').modal('hide');
+            })
+            .catch(error => {
+                addMessage('bot', 'Error generating description.');
+            });
+        }
+
+        // Fetch barang data on modal show
+        $('#itemModal').on('show.bs.modal', function() {
+            fetchBarangData();
+        });
+    </script>
+</body>
+</html>
+
+

@@ -8,8 +8,8 @@
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item"><a href="#">Transaksi</a></li>
+                    <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{route('logtransaksi.index')}}">Transaksi</a></li>
                     <li class="breadcrumb-item active">Import Barang</li>
                 </ol>
             </div>
@@ -32,39 +32,78 @@
                                     <select name="id_gudang" class="form-control" required>
                                         <option value="">Pilih Gudang</option>
                                         @foreach($gudangs as $gudang)
-                                            <option value="{{ $gudang->id }}">{{ $gudang->nama }}</option>
+                                            <option value="{{ $gudang->id }}" @selected(old('id_gudang') == $gudang->id)>
+                                                {{ $gudang->nama }}
+                                            </option>
                                         @endforeach
                                     </select>
+                                    @if($errors->has('id_gudang'))
+                                    <span class="required text-danger">{{ $errors->first('id_gudang') }}</span>
+                                    @endif
                                 </div>
                                 <div class="form-group">
                                     <label>Kode Referensi</label>
-                                    <input name="kode_referensi" type="text" class="form-control" placeholder="Masukkan Kode Referensi" required>
+                                    <div class="input-group">
+                                        <input id="kode_referensi" name="kode_referensi" type="text" 
+                                               class="form-control" placeholder="Masukkan Kode Referensi" 
+                                               value="{{ old('kode_referensi') }}" required>
+                                    <div class="input-group-append">
+                                        <button type="button" id="generate-referensi" class="btn btn-primary">Generate</button>
+                                    </div>
+                                    </div>
+                                    @if($errors->has('kode_referensi'))
+                                    <span class="required text-danger">{{ $errors->first('kode_referensi') }}</span>
+                                    @endif
                                 </div>
                                 <div class="form-group">
                                     <label>Tanggal</label>
-                                    <input name="tanggal" type="date" class="form-control" required>
+                                    <input name="tanggal" type="date" class="form-control" 
+                                           value="{{ old('tanggal') }}" required>
+                                    @if($errors->has('tanggal'))
+                                    <span class="required text-danger">{{ $errors->first('tanggal') }}</span>
+                                    @endif
                                 </div>
                                 <div class="form-group">
                                     <label>Deskripsi</label>
-                                    <textarea name="deskripsi_tujuan" class="form-control" rows="3" placeholder="Masukkan Deskripsi" required></textarea>
+                                    <textarea name="deskripsi_tujuan" class="form-control" rows="3" 
+                                              placeholder="Masukkan Deskripsi" required>{{ old('deskripsi_tujuan') }}</textarea>
+                                    @if($errors->has('deskripsi_tujuan'))
+                                    <span class="required text-danger">{{ $errors->first('deskripsi_tujuan') }}</span>
+                                    @endif
                                 </div>
                                 <h5 class="mt-4">Barang</h5>
                                 <div id="stok-container">
+                                    @php $oldStok = old('stok', [['id_barang' => '', 'kuantitas' => '']]); @endphp
+                                    @foreach($oldStok as $index => $stok)
                                     <div class="row mb-2 stok-row">
                                         <div class="col-md-6">
                                             <label>Barang</label>
-                                            <select name="stok[0][id_barang]" class="form-control" required>
+                                            <select name="stok[{{ $index }}][id_barang]" class="form-control" required>
                                                 <option value="">Pilih Barang</option>
                                                 @foreach($barangs as $barang)
-                                                    <option value="{{ $barang->id }}">{{ $barang->nama }}</option>
+                                                    <option value="{{ $barang->id }}" 
+                                                        @selected($stok['id_barang'] == $barang->id)>
+                                                        {{ $barang->nama }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <label>Kuantitas</label>
-                                            <input name="stok[0][kuantitas]" type="number" class="form-control" min="1" placeholder="Masukkan Kuantitas" required>
+                                            <input name="stok[{{ $index }}][kuantitas]" type="number" 
+                                                   class="form-control" min="1" 
+                                                   value="{{ $stok['kuantitas'] }}" 
+                                                   placeholder="Masukkan Kuantitas" required>
+                                        </div>
+                                        <div class="col-md-2 d-flex align-items-end">
+                                            @if($index > 0)
+                                            <button type="button" class="btn btn-danger btn-sm remove-stok">
+                                                Hapus
+                                            </button>
+                                            @endif
                                         </div>
                                     </div>
+                                    @endforeach
                                 </div>
                                 <button type="button" class="btn btn-success mt-3" id="add-stok">
                                     Tambah Barang
@@ -83,9 +122,8 @@
 </div>
 
 <script>
-    let stokIndex = 1;
+    let stokIndex = {{ count($oldStok) }};
 
-    // Menambahkan baris barang baru
     document.getElementById('add-stok').addEventListener('click', function() {
         const container = document.getElementById('stok-container');
         const newRow = document.createElement('div');
@@ -102,7 +140,9 @@
             </div>
             <div class="col-md-4">
                 <label>Kuantitas</label>
-                <input name="stok[${stokIndex}][kuantitas]" type="number" class="form-control" min="1" placeholder="Masukkan Kuantitas" required>
+                <input name="stok[${stokIndex}][kuantitas]" type="number" 
+                       class="form-control" min="1" 
+                       placeholder="Masukkan Kuantitas" required>
             </div>
             <div class="col-md-2 d-flex align-items-end">
                 <button type="button" class="btn btn-danger btn-sm remove-stok">
@@ -111,14 +151,19 @@
             </div>
         `;
         container.appendChild(newRow);
-
-        // Tambahkan event listener untuk tombol hapus
+        
         newRow.querySelector('.remove-stok').addEventListener('click', function() {
             newRow.remove();
-            stokIndex--;
         });
 
         stokIndex++;
+    });
+
+    // Handle remove buttons for existing rows
+    document.querySelectorAll('.remove-stok').forEach(button => {
+        button.addEventListener('click', function() {
+            this.closest('.stok-row').remove();
+        });
     });
 </script>
 @endsection

@@ -37,13 +37,13 @@
                     @endif
                   </div>
                   <div class="form-group">
-                    <label for="alamat">Alamat</label>
-                    <input name="alamat" type="text" class="form-control" placeholder="Masukkan alamat Gudang" value="{{ $gudang->alamat }}">
+                    <label>Alamat</label>
+                    <input id="alamat" name="alamat" type="text" class="form-control" placeholder="Pilih alamat dari peta" value="{{ old('alamat', $gudang->alamat) }}">
                     @if($errors->has('alamat'))
-                    <span class="required text-danger">{{$errors->first('alamat') }}</span>
+                    <span class="text-danger">{{ $errors->first('alamat') }}</span>
                     @endif
-                  </div>
-                  <div id="map" style="height: 300px; width: 100%;"></div>
+                </div>
+                <div id="map" style="height: 300px; width: 100%;"></div>
                   <button type="submit" class="btn btn-primary my-3"><i class="fa fa-save"></i> Submit</button>
                 </div>
               </form>

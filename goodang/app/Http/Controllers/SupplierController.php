@@ -51,10 +51,7 @@ class SupplierController extends Controller
      */
     public function show(string $id)
     {
-        // Cari supplier berdasarkan ID
         $supplier = Supplier::with('barang')->findOrFail($id);
-
-        // Tampilkan view dengan data supplier dan barang terkait
         return view('supplier.show', compact('supplier'));
     }
 
@@ -95,7 +92,9 @@ class SupplierController extends Controller
     public function destroy(string $id)
     {
         $supplier = Supplier::findOrFail($id);
+        $supplier->barang()->delete();
         $supplier->delete();
+        
 
         flash('Supplier telah dihapus')->success();
         return redirect()->route('supplier.index');

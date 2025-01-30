@@ -67,6 +67,7 @@
         <p>Nama: {{ $barang->nama }}</p>
         <p>Kategori: {{ $barang->kategori->nama }}</p>
         <p>Supplier: {{ $barang->supplier->nama }}</p>
+        <p class="harga-barang format-harga" data-harga="{{ $barang->harga }}">Harga: {{$barang->harga}}</p>
     </div>
 
     <h2>Stok di Gudang</h2>
@@ -75,7 +76,6 @@
             <tr>
                 <th>Gudang</th>
                 <th>Kuantitas</th>
-                
             </tr>
         </thead>
         <tbody>
@@ -87,6 +87,30 @@
             @endforeach
         </tbody>
     </table>
-
+    <script>
+        function formatRupiah(angka) {
+            let number_string = angka.toString(),
+                sisa = number_string.length % 3,
+                rupiah = number_string.substr(0, sisa),
+                ribuan = number_string.substr(sisa).match(/\d{3}/g);
+        
+            if (ribuan) {
+                let separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+        
+            return 'Rp ' + rupiah;
+        }
+      
+        document.querySelectorAll('.format-harga').forEach(function(element) {
+            // Ambil nilai harga dari atribut data-harga
+            let harga = element.getAttribute('data-harga');
+            
+            // Format harga ke Rupiah
+            if (harga) {
+                element.textContent = formatRupiah(harga);
+            }
+        });
+      </script>
 </body>
 </html>
