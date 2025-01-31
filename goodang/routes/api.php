@@ -37,54 +37,54 @@ use App\Http\Controllers\Api\Staff\StaffTransaksiController;
 // Route::post('/login', LoginController::class)->name('login');
 // Route::post('/logout', LogoutController::class)->name('logout');
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
-Route::middleware(['auth:api', 'role:admin'])->group(function () {
+// Route::middleware(['auth:api', 'role:admin'])->group(function () {
 
-    Route::apiResource('kategori', KategoriController::class);
-    Route::apiResource('supplier', SupplierController::class);
-    Route::apiResource('gudang', GudangController::class);
-    Route::apiResource('barang', BarangController::class);
-    Route::apiResource('users', UserController::class);
+//     Route::apiResource('kategori', KategoriController::class);
+//     Route::apiResource('supplier', SupplierController::class);
+//     Route::apiResource('gudang', GudangController::class);
+//     Route::apiResource('barang', BarangController::class);
+//     Route::apiResource('users', UserController::class);
 
-    Route::post('transaksis/{type}', [TransaksiController::class, 'store'])
-        ->name('transaksis.store')
-        ->where('type', 'in|out');
-    Route::post('transaksis/transfer', [TransferController::class, 'store'])
-        ->name('transaksis.transfer.store');
+//     Route::post('transaksis/{type}', [TransaksiController::class, 'store'])
+//         ->name('transaksis.store')
+//         ->where('type', 'in|out');
+//     Route::post('transaksis/transfer', [TransferController::class, 'store'])
+//         ->name('transaksis.transfer.store');
 
-});
+// });
 
-Route::middleware(['auth:api', 'role:staff'])->group(function () {
-    Route::post('stafftransaksis/{type}', [StaffTransaksiController::class, 'store'])
-    ->name('stafftransaksis.store')
-    ->where('type', 'in|out');
-});
+// Route::middleware(['auth:api', 'role:staff'])->group(function () {
+//     Route::post('stafftransaksis/{type}', [StaffTransaksiController::class, 'store'])
+//     ->name('stafftransaksis.store')
+//     ->where('type', 'in|out');
+// });
 
-Route::middleware('auth:api')->group(function () {
+// Route::middleware('auth:api')->group(function () {
 
-    Route::apiResource('staffkategori', StaffKategoriController::class);
-    Route::apiResource('staffsupplier', StaffSupplierController::class);
-    Route::apiResource('staffgudang', StaffGudangController::class);
-    Route::apiResource('staffbarang', StaffBarangController::class);
+//     Route::apiResource('staffkategori', StaffKategoriController::class);
+//     Route::apiResource('staffsupplier', StaffSupplierController::class);
+//     Route::apiResource('staffgudang', StaffGudangController::class);
+//     Route::apiResource('staffbarang', StaffBarangController::class);
 
-    //AI API
-    Route::get('barangs', [UnifiedController::class, 'getAllBarang']);
-    Route::get('barangs/{id}', [UnifiedController::class, 'getBarangById']);
-    Route::get('kategoris', [UnifiedController::class, 'getAllKategori']);
-    Route::get('kategoris/{id}', [UnifiedController::class, 'getKategoriById']);
-    Route::get('suppliers', [UnifiedController::class, 'getAllSupplier']);
-    Route::get('suppliers/{id}', [UnifiedController::class, 'getSupplierById']);
+//     //AI API
+//     Route::get('barangs', [UnifiedController::class, 'getAllBarang']);
+//     Route::get('barangs/{id}', [UnifiedController::class, 'getBarangById']);
+//     Route::get('kategoris', [UnifiedController::class, 'getAllKategori']);
+//     Route::get('kategoris/{id}', [UnifiedController::class, 'getKategoriById']);
+//     Route::get('suppliers', [UnifiedController::class, 'getAllSupplier']);
+//     Route::get('suppliers/{id}', [UnifiedController::class, 'getSupplierById']);
 
-    Route::apiResource('logtransaksis', LogTransaksiController::class);
-    Route::get('logtransaksis-export', [LogTransaksiController::class, 'export'])
-        ->name('logtransaksis.export');
-    Route::get('logtransaksis-export/{id}', [LogTransaksiController::class, 'exportShow'])
-        ->name('logtransaksis.export_show');
+//     Route::apiResource('logtransaksis', LogTransaksiController::class);
+//     Route::get('logtransaksis-export', [LogTransaksiController::class, 'export'])
+//         ->name('logtransaksis.export');
+//     Route::get('logtransaksis-export/{id}', [LogTransaksiController::class, 'exportShow'])
+//         ->name('logtransaksis.export_show');
 
-    Route::apiResource('kartustok', StokBarangController::class);
-    Route::get('export-kartu-stok', [StokBarangController::class, 'exportKartuStok'])
-        ->name('kartustok.export');
-});
+//     Route::apiResource('kartustok', StokBarangController::class);
+//     Route::get('export-kartu-stok', [StokBarangController::class, 'exportKartuStok'])
+//         ->name('kartustok.export');
+// });
