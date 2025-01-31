@@ -7,7 +7,10 @@ Goodang adalah aplikasi berbasis web untuk mempermudah pengelolaan aktivitas gud
 - **Transaksi Barang:** Catat barang masuk, keluar, dan stok opname. 🔄  
 - **Laporan:** Laporan stok barang, transaksi, dan kartu stok. 📊  
 - **Cetak Label:** Cetak label dengan pdf untuk barang. 🖨️  
-- **Pengelolaan Pengguna:** Registrasi & manajemen akses pengguna. 👥  
+- **Pengelolaan Pengguna:** Registrasi & manajemen akses pengguna. 👥
+- **Integrasi AI:** Gunakan AI yang sudah terintegrasi. 🤖
+- **Free API:** Kelola API goodang ini yang memudahkan anda mengembangkan aplikasi sesuai dengan platform yang anda mau 👨🏻‍💻
+- **Free Aplikasi Flutter:** Aplikasi android yang juga terintegrasi dalam satu database dan sistem 📱 
 - **Multi-Gudang:** Kelola lebih dari satu gudang. 🌐  
 
 ---
@@ -15,7 +18,7 @@ Goodang adalah aplikasi berbasis web untuk mempermudah pengelolaan aktivitas gud
 
 ## 🎯 Target Pengguna  
 1. **Admin Gudang:** Mengelola seluruh data dan aktivitas gudang. 🛠️  
-2. **Petugas Gudang:** Mencatat barang masuk, keluar, dan stok opname. 📋  
+2. **Petugas Gudang:** Mencatat barang masuk, keluar, dan stok penjualan. 📋  
 
 ---
 
@@ -104,9 +107,10 @@ Panduan ini akan membantu Anda melakukan setup aplikasi dengan langkah-langkah b
    ],
    ```
 
-5. **Generate Application Key**  
-   Jalankan perintah untuk menghasilkan application key:  
+5. **Generate Application Key dan Storage Link**  
+   Jalankan perintah untuk menghasilkan application key dan link ke public:  
    **`php artisan key:generate`**
+   **`php artisan storage:link`**
 
 6. **Migrasi dan Seeder**  
    Jalankan migrasi untuk membuat tabel database:  
@@ -117,25 +121,29 @@ Panduan ini akan membantu Anda melakukan setup aplikasi dengan langkah-langkah b
    - **Email:** admin@goodang.com  
    - **Password:** password  
 
+7. **Konfigurasi JWT**  
+   Jalankan di cmd atau powershell kode ini untuk generate secret key   
+   **`php artisan jwt:secret"`**
+   
 7. **Jalankan Server**  
    Jalankan server untuk memastikan aplikasi berfungsi:  
    **`php artisan serve`**  
    Di terminal lain, jalankan:  
    **`npm run dev`**  
 
-8. **Jalankan Generator KODE SKU (Jika perlu)**  
+8. **Jalankan Aplikasi AI (Jika perlu)**  
    Jalankan di cmd atau powershell kode ini  
-   **`python "referensi_kode_referensi.py"`**
+   **`python "goodang/python/index.py"`**
    
 ---
 
 ## 🛠️ Teknologi yang Digunakan  
 
-- **Framework:** Laravel 10  
-- **Frontend:** Bootstrap 5, AdminLTE3, JQuery  
-- **Fitur Tambahan:** Jetstream 4, Flash, MPdf, Spatie, TKinter  
+- **Framework:** Laravel 10, Flutter 3
+- **Frontend:** Bootstrap 5, AdminLTE3, JQuery, 
+- **Fitur Tambahan:** Jetstream 4, Flash, MPdf, Spatie, TKinter, JWT, Google Gemini  
 - **Database:** PostgreSQL 15, MySQL
-- **Bahasa Pemrograman:** PHP, Javascript, Python
+- **Bahasa Pemrograman:** PHP, Javascript, Python, Dart
 - **Lokasi:** Nominatim dan Leaflet  
 
 ---
@@ -146,3 +154,6 @@ Aplikasi ini dikembangkan oleh:
 **Lionel Jevon Chrismana Putra**  
 Siswa Kelas XII, SMKN 2 Buduran
   
+
+## Note
+Aplikasi ini belum sepenuhnya selesau dan butuh pengembangan lebih lanjut
