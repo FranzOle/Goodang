@@ -22,6 +22,7 @@ use App\Http\Controllers\LogTransaksiController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\StokBarangController;
+use App\Http\Controllers\SalesController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -97,5 +98,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/export-kartu-stok', [StokBarangController::class, 'exportKartuStok'])->name('kartustok.export');
 
     Route::get('client-export', [ClientController::class, 'export'])->name('client.export');
+
+    Route::resource('sale', SalesController::class);
 
 });

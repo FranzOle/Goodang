@@ -93,9 +93,20 @@ class StaffTransaksiController extends Controller
             if ($type === 'in') {
                 $jumlahStok->kuantitas += $stok['kuantitas'];
             } elseif ($type === 'out') {
-                if ($jumlahStok->kuantitas < $stok['kuantitas']) {
-                    throw new \Exception("Stok barang ID {$stok['id_barang']} tidak mencukupi.");
+                $stokMasukSebelumnya = TransaksiDetail::whereHas('transaksi', function ($query) use ($stok, $request) {
+                    $query->where('stock_type', 'in')
+                          ->where('id_gudang', $request->id_gudang)
+                          ->where('tanggal', '<=', $request->tanggal);
+                })->where('id_barang', $stok['id_barang'])->exists();
+
+                if (!$stokMasukSebelumnya) {
+                    throw new \Exception("Stok keluar tidak bisa dilakukan sebelum ada stok masuk untuk barang: {$barang->nama}");
                 }
+
+                if ($jumlahStok->kuantitas < $stok['kuantitas']) {
+                    throw new \Exception("Stok tidak mencukupi untuk barang: {$barang->nama}");
+                }
+
                 $jumlahStok->kuantitas -= $stok['kuantitas'];
             }
             $jumlahStok->save();

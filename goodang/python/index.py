@@ -5,7 +5,7 @@ import requests
 import google.generativeai as genai
 
 # Konfigurasi Google Generative AI
-# genai.configure(api_key="AIzaSyCC_CaHgYnsSe63Or_d7UaOBZCd4qTJM8A")
+genai.configure(api_key="AIzaSyCC_CaHgYnsSe63Or_d7UaOBZCd4qTJM8A")
 
 generation_config = {
     "temperature": 1,

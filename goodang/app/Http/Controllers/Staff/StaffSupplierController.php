@@ -38,7 +38,8 @@ class StaffSupplierController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $supplier = Supplier::with('barang')->findOrFail($id);
+        return view('supplier.show', compact('supplier'));
     }
 
     /**
@@ -54,7 +55,7 @@ class StaffSupplierController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        
     }
 
     /**

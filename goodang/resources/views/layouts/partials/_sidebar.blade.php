@@ -1,5 +1,5 @@
 <aside class="main-sidebar sidebar-light-light elevation-4">
-    <a href="index3.html" class="brand-link text-center border-bottom">
+    <a href="/" class="brand-link text-center border-bottom">
         <span class="brand-text font-weight-bold text-primary" style="font-size: 1.5rem;">Goodang</span>
     </a>
 
@@ -170,18 +170,18 @@
                                     <i class="fa fa-chart-pie nav-icon"></i>
                                     <p>Dashboard Penjualan</p>
                                 </a>
-                            </li>
+                            </li>@endif
                             <li class="nav-item">
                                 <a href="#" class="nav-link {{ request()->is('laporan-penjualan*') ? 'active text-primary' : '' }}">
                                     <i class="fa fa-database nav-icon"></i>
                                     <p>Laporan Penjualan</p>
                                 </a>
                             </li>
-                        @endif
+                        
             
                         <!-- Menu untuk Sales -->
                         <li class="nav-item">
-                            <a href="#" class="nav-link {{ request()->is('transaksi-langsung*') ? 'active text-primary' : '' }}">
+                            <a href="{{ Auth::user()->role === 'admin' ? route('sale.create') : '#' }}" class="nav-link {{ request()->is(Auth::user()->role === 'admin' ? 'sale.create' : 'transaksi-langsun*') ? 'active text-primary' : '' }}">
                                 <i class="fa fa-handshake nav-icon"></i>
                                 <p>Transaksi Langsung</p>
                             </a>

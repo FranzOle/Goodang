@@ -10,7 +10,7 @@ use App\Models\User;
 class ProfileController extends Controller
 {
     /**
-     * Display the profile of the currently authenticated user.
+     * Menampilkan profil pengguna yang sedang login.
      */
     public function show()
     {
@@ -19,7 +19,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * Show the form for editing the authenticated user's profile.
+     * Menampilkan form untuk mengedit profil pengguna yang sedang login.
      */
     public function edit()
     {
@@ -28,38 +28,43 @@ class ProfileController extends Controller
     }
 
     /**
-     * Update the authenticated user's profile.
+     * Memperbarui data profil pengguna yang sedang login.
      */
     public function update(Request $request)
     {
         $user = Auth::user();
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:8|confirmed',
-            'current_password' => $request->filled('password') && $user->role !== 'admin'
-                ? 'required|string' : '',
-            'alamat' => 'nullable|max:255', 
-            'nomor_telepon' => 'nullable|digits_between:10,13|unique:users,nomor_telepon,' . $user->id, // Pastikan atribut ini ada
-            'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'name'            => 'required|string|max:255',
+            'email'           => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'password'        => 'nullable|string|min:8|confirmed',
+            'current_password'=> $request->filled('password') && $user->role !== 'admin'
+                                    ? 'required|string' : '',
+            'alamat'          => 'nullable|string|max:255',
+            'nomor_telepon'   => 'nullable|min:10|max:19|unique:users,nomor_telepon,' . $user->id,
+            'profile_photo'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
+        // Jika pengguna mengganti password, verifikasi password lama terlebih dahulu
         if ($request->filled('password') && $user->role !== 'admin') {
             if (!Hash::check($request->current_password, $user->password)) {
                 return back()->withErrors(['current_password' => 'Password lama tidak cocok.']);
             }
         }
 
-        $user->name = $request->name;
+        // Update data profil
+        $user->name  = $request->name;
         $user->email = $request->email;
+
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
         }
 
-        $user->alamat = $request->alamat; 
-        $user->nomor_telepon = $request->nomor_telepon; 
+        // Simpan tambahan data: alamat dan nomor telepon
+        $user->alamat = $request->alamat;
+        $user->nomor_telepon = $request->nomor_telepon;
 
+        // Proses upload foto profil jika ada
         if ($request->hasFile('profile_photo')) {
             $photo = $request->file('profile_photo');
             $path = $photo->store('profile-photos', 'public');

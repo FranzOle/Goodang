@@ -3,7 +3,7 @@ import google.generativeai as genai
 import tkinter as tk
 from tkinter import scrolledtext
 
-# genai.configure(api_key="AIzaSyCC_CaHgYnsSe63Or_d7UaOBZCd4qTJM8A")
+genai.configure(api_key="AIzaSyCC_CaHgYnsSe63Or_d7UaOBZCd4qTJM8A")
 
 generation_config = {
     "temperature": 1,

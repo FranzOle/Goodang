@@ -10,6 +10,7 @@ use App\Models\TransaksiDetail;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\KartuStokExport;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class StokBarangController extends Controller
 {
@@ -21,6 +22,11 @@ class StokBarangController extends Controller
             $kartuStok = [];
             $stokGudang = [];
             
+            // Fitur 2: Select2 - Ambil data barang berdasarkan pencarian
+            if ($request->has('q')) {
+                return Barang::where('nama', 'like', '%'.$request->q.'%')->get();
+            }
+
             if ($request->filled('id_barang')) {
                 $id_barang = $request->input('id_barang');
 
@@ -34,22 +40,60 @@ class StokBarangController extends Controller
                 $id_barang = $request->input('id_barang');
                 $id_gudang = $request->input('id_gudang');
 
-                $kartuStok = TransaksiDetail::with(['transaksi', 'barang'])
+                $query = TransaksiDetail::with(['transaksi', 'barang'])
                     ->where('id_barang', $id_barang)
                     ->whereHas('transaksi', function ($query) use ($id_gudang) {
                         $query->where('id_gudang', $id_gudang);
-                    })
-                    ->get();
+                    });
+
+                // Fitur 3: Filter tanggal
+                if ($request->filled('tahun')) {
+                    $query->whereHas('transaksi', function ($q) use ($request) {
+                        $q->whereYear('tanggal', $request->tahun);
+                    });
+                }
+
+                if ($request->filled('bulan') && $request->filled('tahun')) {
+                    $query->whereHas('transaksi', function ($q) use ($request) {
+                        $q->whereMonth('tanggal', $request->bulan)
+                          ->whereYear('tanggal', $request->tahun);
+                    });
+                }
+
+                $kartuStok = $query->get()->map(function ($item, $key) {
+                    $item->transaksi->tanggal = Carbon::parse($item->transaksi->tanggal)->format('Y-m-d');
+                    return $item;
+                });
+
+                // Fitur 1: Hitung pergerakan stok
+                $saldo = 0;
+                $kartuStok = $kartuStok->sortBy('transaksi.tanggal')->map(function ($item) use (&$saldo) {
+                    $saldo += $item->transaksi->stock_type == 'in' ? $item->kuantitas : -$item->kuantitas;
+                    $item->saldo = $saldo;
+                    return $item;
+                });
             }
 
-            return view('kartustok.index', compact('barangList', 'gudangList', 'kartuStok', 'stokGudang'));
+            // Ambil tahun unik untuk filter
+            $tahunList = TransaksiDetail::with('transaksi')
+                ->get()
+                ->pluck('transaksi.tanggal')
+                ->filter()
+                ->map(function ($date) {
+                    return Carbon::parse($date)->year;
+                })
+                ->unique()
+                ->sortDesc()
+                ->values();
+
+            return view('kartustok.index', compact('barangList', 'gudangList', 'kartuStok', 'stokGudang', 'tahunList'));
         } catch (\Exception $e) {
             Log::error('Error pada StokBarangController@index: ' . $e->getMessage());
-
             return redirect()->route('kartustok.index')->with('error', 'Terjadi kesalahan saat memuat data. Silakan coba lagi.');
         }
     }
 
+    // ... (method exportKartuStok tetap sama)
     public function exportKartuStok(Request $request)
     {
         try {

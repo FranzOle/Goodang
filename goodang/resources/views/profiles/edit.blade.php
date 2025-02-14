@@ -18,23 +18,25 @@
     </div>
 </div>
 
+<!-- Form Update Profil beserta Edit Password -->
 <div class="content">
     <div class="container-fluid">
-        <div class="row">
-            <!-- Bagian Form Update Profil -->
-            <div class="col-lg-6">
-                <div class="card card-primary card-outline">
-                    <div class="card-body">
-                        <h5 class="card-title">Perbarui Data Profil</h5><br>
-                        <form role="form" action="{{ route('profiles.update', Auth::user()->id) }}" method="post" enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT')
+        <!-- Pastikan form mencakup kedua kolom -->
+        <form role="form" action="{{ route('profiles.update', Auth::user()->id) }}" method="post" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
+            <div class="row">
+                <!-- Kolom kiri: Data Profil -->
+                <div class="col-lg-6">
+                    <div class="card card-primary card-outline">
+                        <div class="card-body">
+                            <h5 class="card-title">Perbarui Data Profil</h5><br>
                             <!-- Input Nama -->
                             <div class="form-group">
                                 <label>Nama</label>
                                 <input name="name" type="text" class="form-control" value="{{ $user->name }}" placeholder="Masukkan Nama Lengkap" required>
                                 @error('name')
-                                <span class="required text-danger">{{ $message }}</span>
+                                    <span class="required text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
                             <!-- Input Email -->
@@ -42,7 +44,7 @@
                                 <label>Email</label>
                                 <input name="email" type="email" class="form-control" value="{{ $user->email }}" placeholder="Masukkan Email" required>
                                 @error('email')
-                                <span class="required text-danger">{{ $message }}</span>
+                                    <span class="required text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
                             <!-- Input Foto Profil -->
@@ -55,73 +57,76 @@
                                 @endif
                                 <input name="profile_photo" type="file" class="form-control">
                                 @error('profile_photo')
-                                <span class="required text-danger">{{ $message }}</span>
+                                    <span class="required text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
-
+                            <!-- Input Nomor Telepon (menggunakan template dari contoh) -->
                             <div class="form-group">
                                 <label for="nomor_telepon">Nomor Telepon</label>
-                                <input name="nomor_telepon" type="text" class="form-control" value="{{ old('nomor_telepon', $user->nomor_telepon) }}" placeholder="Nomor Telepon">
+                                <input id="telepon" name="nomor_telepon" type="text" class="form-control" placeholder="Contoh: 08123456789" value="{{ old('nomor_telepon', $user->nomor_telepon) }}">
                                 @error('nomor_telepon')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
-
+                            <!-- Input Alamat (menggunakan template dari contoh) -->
                             <div class="form-group">
                                 <label for="alamat">Alamat</label>
-                                <textarea name="alamat" class="form-control" rows="3" placeholder="Masukkan alamat lengkap">{{ old('alamat', $user->alamat) }}</textarea>
+                                <textarea id="alamat" name="alamat" class="form-control" rows="3" placeholder="Masukkan alamat lengkap">{{ old('alamat', $user->alamat) }}</textarea>
                                 @error('alamat')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <!-- Tombol Submit -->
+                            <!-- Tampilan Map (jika diperlukan untuk menandai lokasi) -->
+                            <div class="form-group">
+                                <div id="map" style="height: 300px; width: 100%;"></div>
+                            </div>
+                            <!-- Tombol Submit dan Kembali -->
                             <button type="submit" class="btn btn-primary my-3">
                                 <i class="fa fa-save"></i> Update
                             </button>
                             <a href="{{ route('profiles.show', Auth::user()->id) }}" class="btn btn-secondary my-3">
                                 <i class="fa fa-arrow-left"></i> Kembali
                             </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Bagian Form Edit Password -->
-            <!-- Bagian Form Edit Password -->
-            <div class="col-lg-6">
-                <div class="card card-primary card-outline">
-                    <div class="card-body">
-                        <h5 class="card-title">Edit Password</h5><br>
-                        @if(Auth::user()->role != 'admin')
-                        <!-- Input Password Lama -->
-                        <div class="form-group">
-                            <label>Password Sebelumnya</label>
-                            <input name="current_password" type="password" class="form-control" placeholder="Masukkan Password Sebelumnya">
-                            @error('current_password')
-                            <span class="required text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        @endif
-                        <!-- Input Password Baru -->
-                        <div class="form-group">
-                            <label>Password Baru</label>
-                            <input name="password" type="password" class="form-control" placeholder="Masukkan Password Baru">
-                            @error('password')
-                            <span class="required text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <!-- Konfirmasi Password Baru -->
-                        <div class="form-group">
-                            <label>Konfirmasi Password Baru</label>
-                            <input name="password_confirmation" type="password" class="form-control" placeholder="Ulangi Password Baru">
                         </div>
                     </div>
                 </div>
+                <!-- Kolom kanan: Edit Password -->
+                <div class="col-lg-6">
+                    <div class="card card-primary card-outline">
+                        <div class="card-body">
+                            <h5 class="card-title">Edit Password</h5><br>
+                            @if(Auth::user()->role != 'admin')
+                                <!-- Input Password Lama -->
+                                <div class="form-group">
+                                    <label>Password Sebelumnya</label>
+                                    <input name="current_password" type="password" class="form-control" placeholder="Masukkan Password Sebelumnya">
+                                    @error('current_password')
+                                        <span class="required text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            @endif
+                            <!-- Input Password Baru -->
+                            <div class="form-group">
+                                <label>Password Baru</label>
+                                <input name="password" type="password" class="form-control" placeholder="Masukkan Password Baru">
+                                @error('password')
+                                    <span class="required text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <!-- Konfirmasi Password Baru -->
+                            <div class="form-group">
+                                <label>Konfirmasi Password Baru</label>
+                                <input name="password_confirmation" type="password" class="form-control" placeholder="Ulangi Password Baru">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
         </form> <!-- Tutup Form -->
     </div>
 </div>
 
+<!-- Script untuk menangani validasi password -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const currentPasswordInput = document.querySelector('input[name="current_password"]');
