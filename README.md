@@ -125,26 +125,32 @@ Panduan ini akan membantu Anda melakukan setup aplikasi dengan langkah-langkah b
    Jalankan di cmd atau powershell kode ini untuk generate secret key   
    **`php artisan jwt:secret"`**
    
-7. **Jalankan Server**  
+8. **Jalankan Server**  
    Jalankan server untuk memastikan aplikasi berfungsi:  
    **`php artisan serve`**  
    Di terminal lain, jalankan:  
    **`npm run dev`**  
 
-8. **Jalankan Aplikasi AI (Jika perlu)**  
+9. **Jalankan Aplikasi AI (Jika perlu)**  
    Jalankan di cmd atau powershell kode ini  
    **`python "goodang/python/index.py"`**
+
+10. **Jalankan Aplikasi Android**  
+   Jalankan di cmd atau powershell kode ini (note: pakai Handphone anda dengan debugging USB atau android emulator
+   **`cd goodang_mobile`**
+    Lalu Jalankan perintah ini:
+   **`flutter run`**
    
 ---
 
 ## 🛠️ Teknologi yang Digunakan  
 
-- **Framework:** Laravel 10, Flutter 3
-- **Frontend:** Bootstrap 5, AdminLTE3, JQuery, 
-- **Fitur Tambahan:** Jetstream 4, Flash, MPdf, Spatie, TKinter, JWT, Google Gemini  
+- **Framework:** Laravel 10, Flutter, VueJS
+- **Frontend:** Bootstrap 5, AdminLTE3, JQuery, TailwindCSS
+- **Fitur Tambahan:** Jetstream 4, Flash, MPdf, Spatie, TKinter, JWT, Google Gemini, Gradle, JWT  
 - **Database:** PostgreSQL 15, MySQL
 - **Bahasa Pemrograman:** PHP, Javascript, Python, Dart
-- **Lokasi:** Nominatim dan Leaflet  
+- **Konfigurasi Lokasi:** Nominatim dan Leaflet  
 
 ---
 
@@ -153,7 +159,8 @@ Panduan ini akan membantu Anda melakukan setup aplikasi dengan langkah-langkah b
 Aplikasi ini dikembangkan oleh:  
 **Lionel Jevon Chrismana Putra**  
 Siswa Kelas XII, SMKN 2 Buduran
+Intern Hexa Integra Mandiri.
   
 
 ## Note
-Aplikasi ini belum sepenuhnya selesau dan butuh pengembangan lebih lanjut
+Aplikasi ini belum sepenuhnya selesai dan butuh pengembangan lebih lanjut
